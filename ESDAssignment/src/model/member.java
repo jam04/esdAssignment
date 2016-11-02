@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author a5-jama
  */
-public class member {
+public class Member {
     public int id;
     public String name;
     public String address;
