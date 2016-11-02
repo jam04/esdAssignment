@@ -18,7 +18,10 @@ public class Member {
     public Date dor;
     public String status;
     public float balance;
-
+  
+    public Member() {
+    }
+    
     public float getBalance() {
         return balance;
     }
