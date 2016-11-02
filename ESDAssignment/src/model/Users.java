@@ -25,7 +25,6 @@ public class Users {
         this.status = status;
     }
 
-
     public String getPassword() {
         return password;
     }
