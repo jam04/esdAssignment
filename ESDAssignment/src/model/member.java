@@ -11,13 +11,13 @@ import java.util.Date;
  * @author a5-jama
  */
 public class Member {
-    public int id;
-    public String name;
-    public String address;
-    public Date dob;
-    public Date dor;
-    public String status;
-    public float balance;
+    private int id;
+    private String name;
+    private String address;
+    private Date dob;
+    private Date dor;
+    private String status;
+    private float balance;
   
     public Member() {
     }
