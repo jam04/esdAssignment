@@ -18,7 +18,7 @@ public class Payment {
     private float amount;
     private Date date;
 
-    public Payments() {
+    public Payment() {
     }
 
     public Date getDate() {
