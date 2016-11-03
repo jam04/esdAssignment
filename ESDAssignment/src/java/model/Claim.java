@@ -20,7 +20,7 @@ public class Claim {
     private String status;
     private float amount;
 
-    public Claims() {
+    public Claim() {
     }
     
     public float getAmount() {
