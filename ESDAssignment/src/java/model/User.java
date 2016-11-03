@@ -8,13 +8,13 @@
  *
  * @author a5-jama
  */
-public class Users {
+public class User {
     
     private String id;
     private String password;
     private String status;
 
-    public Users() {
+    public User() {
     }
 
     public String getStatus() {
