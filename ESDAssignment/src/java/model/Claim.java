@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author a5-jama
  */
-public class Claims {
+public class Claim {
     
     private int id;
     private String memID;
