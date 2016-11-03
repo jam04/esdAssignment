@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * @author a5-jama
  */
-public class Payments {
+public class Payment {
 
     private int id;
     private String memID;
