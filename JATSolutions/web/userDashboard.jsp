@@ -18,6 +18,10 @@
         thisMember.setName("The Muffin Man");
         thisMember.setStatus("inactive");
     %>
+    <%! Member foundMember ;%>
+    <%
+        foundMember = (Member) request.getAttribute("foundMember");
+    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
