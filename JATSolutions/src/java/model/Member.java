@@ -1,7 +1,9 @@
 package model;
 
+import java.sql.Date;
 
-import java.util.Date;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,7 +15,7 @@ import java.util.Date;
  * @author a5-jama
  */
 public class Member {
-    private int id;
+    private String id;
     private String name;
     private String address;
     private Date dob;
@@ -72,11 +74,11 @@ public class Member {
         this.name = name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,7 +1,7 @@
 package model;
 
 
-import java.util.Date;
+import java.sql.Date;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +16,7 @@ public class Payment {
 
     private int id;
     private String memID;
-    private char typeOfPayment;
+    private String typeOfPayment;
     private float amount;
     private Date date;
 
@@ -39,11 +39,11 @@ public class Payment {
         this.amount = amount;
     }
 
-    public char getTypeOfPayment() {
+    public String getTypeOfPayment() {
         return typeOfPayment;
     }
 
-    public void setTypeOfPayment(char typeOfPayment) {
+    public void setTypeOfPayment(String typeOfPayment) {
         this.typeOfPayment = typeOfPayment;
     }
 
