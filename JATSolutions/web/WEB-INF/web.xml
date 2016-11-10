@@ -6,15 +6,15 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Front</servlet-name>
-        <url-pattern>/docs/*</url-pattern>
+        <url-pattern>/Front</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Front</servlet-name>
-        <url-pattern>/Front</url-pattern>
+        <url-pattern>/docs/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            20
         </session-timeout>
     </session-config>
 </web-app>

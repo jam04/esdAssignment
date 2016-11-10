@@ -6,7 +6,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,13 +31,19 @@ public class FrontController extends HttpServlet {
 
         String id = request.getRequestURI().substring(request.getContextPath().length());
         String include;
-        
+
         switch (id) {
-            case "/docs/footer":
-                include = "footer.jsp";
+            case "/docs/Footer":
+                include = "Footer.jsp";
+                break;
+            case "/docs/login":
+                include = "login.jsp";
+                break;
+            case "/docs/register":
+                include = "register.jsp";
                 break;
             default:
-                include = "error.jsp";
+                include = "Error.jsp";
         }
         request.setAttribute("doco", include);
         request.getRequestDispatcher("/WEB-INF/docs/main.jsp").forward(request, response);
