@@ -13,8 +13,8 @@
     </head>
     <body>
         <h3 align="left"> Login </h3>
-        <input name="username" type="text" placeholder="Username" id="username"><br>
-        <input name="password" type="password" placeholder="Password" id="password"><br>
+        <input name="id" type="text" placeholder="Enter your user id" id="id"><br><br>
+        <input name="password" type="password" placeholder="Enter your password" id="password"><br><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Login</button>
         <input type="button" class="btn btn-primary btn-block btn-large" value = "Register"/>
     </body>
