@@ -88,7 +88,7 @@ public class DBController {
             System.out.println("SQL statement is not executed!");
         }
         return exist;
-    }
+    }//method
 
     public void registerMember(Member member, String password) {
         PreparedStatement ps = null;
@@ -101,7 +101,7 @@ public class DBController {
             ps.setString(3, member.getAddress());
             ps.setDate(4, member.getDob());
             ps.setDate(5, currentDate);
-            ps.setString(6, "APPLIED");
+            ps.setString(6, "PROVIS");
             ps.setFloat(7, member.getBalance());
 
             ps.executeUpdate();
@@ -110,7 +110,7 @@ public class DBController {
             ps = con.prepareStatement("INSERT INTO users VALUE (?,?,?)" + PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getId());
             ps.setString(2, password);
-            ps.setString(3, "INACTIVE");
+            ps.setString(3, "PROVIS");
 
             ps.executeUpdate();
             ps.close();
@@ -129,8 +129,8 @@ public class DBController {
             while (resultSet.next()) {
                 Payment payment = new Payment();
                 payment.setId(resultSet.getInt("id"));
-                payment.setMemID(resultSet.getString("mem_id"));
-                payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
+                payment.setMemId(resultSet.getString("mem_id"));
+                payment.setPaymentType(resultSet.getString("type_of_payment"));
                 payment.setAmount(resultSet.getFloat("amount"));
                 payment.setDate(resultSet.getDate("date"));
 
@@ -177,13 +177,12 @@ public class DBController {
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
-
-    }
+    }//method
 
     ////////////////////////////////Admin///////////////////////////////////////
     public ArrayList memberList() {
         ArrayList memberList = new ArrayList();
-        String query = "SELECT * from members WHERE mem_id NOT LIKE 'ADMIN' AND balance<0.00";
+        String query = "SELECT * from members WHERE mem_id NOT LIKE 'ADMIN'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
@@ -202,7 +201,30 @@ public class DBController {
             System.out.println("SQL statement is not executed!");
         }
         return memberList;
-    }
+    }//method
+    
+    public ArrayList balanceList(){
+        ArrayList balanceList = new ArrayList();
+        String query = "SELECT * from members WHERE balance<0.00";
+        try {
+            selectQuery(query);
+            while (resultSet.next()) {
+                Member member = new Member();
+                selectQuery(query);
+                member.setId(resultSet.getString("id"));
+                member.setName(resultSet.getString("name"));
+                member.setAddress(resultSet.getString("address"));
+                member.setDob(resultSet.getDate("dob"));
+                member.setDor(resultSet.getDate("dor"));
+                member.setStatus(resultSet.getString("status"));
+                member.setBalance(resultSet.getFloat("balance"));
+                balanceList.add(member);
+            }
+        } catch (SQLException s) {
+            System.out.println("SQL statement is not executed!");
+        }
+        return balanceList;
+    }//method
 
     public ArrayList claimList(String id) {
         ArrayList claimList = new ArrayList();
@@ -215,7 +237,7 @@ public class DBController {
                 claim.setAmount(resultSet.getFloat("amount"));
                 claim.setDate(resultSet.getDate("date"));
                 claim.setId(resultSet.getInt("id"));
-                claim.setMemID(resultSet.getString("mem_id"));
+                claim.setMemId(resultSet.getString("mem_id"));
                 claim.setRationale(resultSet.getString("rationale"));
                 claim.setStatus(resultSet.getString("status"));
                 claimList.add(claim);
