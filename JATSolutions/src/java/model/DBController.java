@@ -25,6 +25,10 @@ public class DBController {
     Statement statement;
     ResultSet resultSet;
 
+    public DBController(Connection con) {
+        this.con = con;
+    }
+
     ///////////////////////////////////Login////////////////////////////////////
     public boolean validateLogin(String username, String password) throws ClassNotFoundException, SQLException {
 
@@ -34,14 +38,13 @@ public class DBController {
 
         try {
             selectQuery(query);
-            String pass = resultSet.getString("password");
-            boolean exist = idExist(username);
-            //check if username and password match
-            if (exist == true) {
-                found = password.equals(pass);
-            } else {
-                found = false;
-            }//if
+            while(resultSet.next() && found == false){
+                if (username.equals(resultSet.getString("id"))){
+                    if(password.equals(resultSet.getString("password"))){
+                        found = true;
+                    }
+                }
+            }
 
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
@@ -49,11 +52,11 @@ public class DBController {
         return found;
     }//method
 
-    public Member getMember(String id) {
+    public Member getMember(String username) {
 
         Member member = new Member();
 
-        String query = "SELECT * FROM members WHERE id = '" + id + "'";
+        String query = "SELECT * FROM members WHERE id = '" + username + "'";
 
         try {
             selectQuery(query);
@@ -71,13 +74,13 @@ public class DBController {
         return member;
     }//method
 
-    public boolean idExist(String user) {
+    public boolean idExist(String username) {
         boolean exist = false;
         String query = "SELECT * FROM users";
         try {
             selectQuery(query);
             while (resultSet.next()) {
-                if (user.equals(resultSet.getString("id"))) {
+                if (username.equals(resultSet.getString("id"))) {
                     exist = true;
                     break;
                 } else {
@@ -101,7 +104,7 @@ public class DBController {
             ps.setString(3, member.getAddress());
             ps.setDate(4, member.getDob());
             ps.setDate(5, currentDate);
-            ps.setString(6, "APPLIED");
+            ps.setString(6, "PROVISI");
             ps.setFloat(7, member.getBalance());
 
             ps.executeUpdate();
@@ -110,7 +113,7 @@ public class DBController {
             ps = con.prepareStatement("INSERT INTO users VALUE (?,?,?)" + PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getId());
             ps.setString(2, password);
-            ps.setString(3, "INACTIVE");
+            ps.setString(3, "PROVISI");
 
             ps.executeUpdate();
             ps.close();
@@ -121,9 +124,9 @@ public class DBController {
     }
 
     /////////////////////////////////Members////////////////////////////////////
-    public ArrayList paymentList(String id) {
+    public ArrayList paymentList(String username) {
         ArrayList paymentList = new ArrayList();
-        String query = "SELECT * from claims WHERE mem_id ='" + id + "'";
+        String query = "SELECT * from claims WHERE mem_id ='" + username + "'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
@@ -142,12 +145,12 @@ public class DBController {
         return paymentList;
     }
 
-    public void makePayment(String id, float amount, String type) {
+    public void makePayment(String username, float amount, String type) {
         PreparedStatement ps = null;
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
         try {
             ps = con.prepareStatement("INSERT INTO payments VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, id);
+            ps.setString(2, username);
             ps.setString(3, type);
             ps.setFloat(4, amount);
             ps.setDate(5, currentDate);
@@ -160,12 +163,12 @@ public class DBController {
         }
     }
 
-    public void submitClaim(String id, float amount, String rationale) {
+    public void submitClaim(String username, float amount, String rationale) {
         PreparedStatement ps = null;
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
         try {
             ps = con.prepareStatement("INSERT INTO claims VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, id);
+            ps.setString(2, username);
             ps.setDate(3, currentDate);
             ps.setString(4, rationale);
             ps.setString(5, "PENDING");
@@ -204,9 +207,14 @@ public class DBController {
         return memberList;
     }
 
-    public ArrayList claimList(String id) {
+    public ArrayList claimList(String username) {
         ArrayList claimList = new ArrayList();
-        String query = "SELECT * from claims WHERE mem_id LIKE'" + id + "'";
+        
+        if (username.equals("")){
+            username = "%";
+        }
+        
+        String query = "SELECT * from claims WHERE mem_id LIKE'" + username + "'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
