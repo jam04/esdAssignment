@@ -38,9 +38,9 @@ public class DBController {
 
         try {
             selectQuery(query);
-            while(resultSet.next() && found == false){
-                if (username.equals(resultSet.getString("id"))){
-                    if(password.equals(resultSet.getString("password"))){
+            while (resultSet.next() && found == false) {
+                if (username.equals(resultSet.getString("id"))) {
+                    if (password.equals(resultSet.getString("password"))) {
                         found = true;
                     }
                 }
@@ -56,17 +56,19 @@ public class DBController {
 
         Member member = new Member();
 
-        String query = "SELECT * FROM members WHERE id ='" + username + "'";
+        String query = "SELECT * FROM members WHERE id = '" + username + "'";
 
         try {
             selectQuery(query);
-            member.setId(resultSet.getString("id"));
-            member.setName(resultSet.getString("name"));
-            member.setAddress(resultSet.getString("address"));
-            member.setDob(resultSet.getDate("dob"));
-            member.setDor(resultSet.getDate("dor"));
-            member.setStatus(resultSet.getString("status"));
-            member.setBalance(resultSet.getFloat("balance"));
+            while (resultSet.next()) {
+                member.setId(resultSet.getString("id"));
+                member.setName(resultSet.getString("name"));
+                member.setAddress(resultSet.getString("address"));
+                member.setDob(resultSet.getDate("dob"));
+                member.setDor(resultSet.getDate("dor"));
+                member.setStatus(resultSet.getString("status"));
+                member.setBalance(resultSet.getFloat("balance"));
+            }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
@@ -98,7 +100,7 @@ public class DBController {
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
-            ps = con.prepareStatement("INSERT INTO members VALUE (?,?,?,?,?,?,?)" + PreparedStatement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO members VALUES (?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getId());
             ps.setString(2, member.getName());
             ps.setString(3, member.getAddress());
@@ -110,7 +112,7 @@ public class DBController {
             ps.executeUpdate();
             ps.close();
 
-            ps = con.prepareStatement("INSERT INTO users VALUE (?,?,?)" + PreparedStatement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO users VALUES (?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getId());
             ps.setString(2, password);
             ps.setString(3, "PROVISI");
@@ -126,7 +128,7 @@ public class DBController {
     /////////////////////////////////Members////////////////////////////////////
     public ArrayList paymentList(String username) {
         ArrayList paymentList = new ArrayList();
-        String query = "SELECT * from claims WHERE mem_id ='" + username + "'";
+        String query = "SELECT * FROM claims WHERE mem_id ='" + username + "'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
@@ -158,6 +160,12 @@ public class DBController {
             ps.executeUpdate();
             ps.close();
 
+            if (type.equals("MEMBER")) {
+                statement = con.createStatement();
+                String query = "UPDATE members SET status='APPLIED' WHERE id='" + username + "'";
+                statement.executeUpdate(query);
+            }
+
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
@@ -186,7 +194,7 @@ public class DBController {
     ////////////////////////////////Admin///////////////////////////////////////
     public ArrayList memberList() {
         ArrayList memberList = new ArrayList();
-        String query = "SELECT * from members WHERE mem_id NOT LIKE 'ADMIN' AND balance<0.00";
+        String query = "SELECT * FROM members WHERE mem_id NOT LIKE 'ADMIN'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
@@ -207,14 +215,65 @@ public class DBController {
         return memberList;
     }
 
+    public Member getMember(String criteria, String value) {
+
+        Member member = new Member();
+
+        String query = "SELECT * FROM members WHERE " + criteria + " = '" + value + "'";
+
+        try {
+            selectQuery(query);
+            while (resultSet.next()) {
+                member.setId(resultSet.getString("id"));
+                member.setName(resultSet.getString("name"));
+                member.setAddress(resultSet.getString("address"));
+                member.setDob(resultSet.getDate("dob"));
+                member.setDor(resultSet.getDate("dor"));
+                member.setStatus(resultSet.getString("status"));
+                member.setBalance(resultSet.getFloat("balance"));
+            }
+        } catch (SQLException s) {
+            System.out.println("SQL statement is not executed!");
+        }
+
+        return member;
+    }//method
+
+    public ArrayList balanceList() {
+        ArrayList balanceList = new ArrayList();
+        String query = "SELECT * from members WHERE mem_id NOT LIKE 'ADMIN' AND balance>0.00";
+        try {
+            selectQuery(query);
+            while (resultSet.next()) {
+                Member member = new Member();
+                selectQuery(query);
+                member.setId(resultSet.getString("id"));
+                member.setName(resultSet.getString("name"));
+                member.setAddress(resultSet.getString("address"));
+                member.setDob(resultSet.getDate("dob"));
+                member.setDor(resultSet.getDate("dor"));
+                member.setStatus(resultSet.getString("status"));
+                member.setBalance(resultSet.getFloat("balance"));
+                balanceList.add(member);
+            }
+        } catch (SQLException s) {
+            System.out.println("SQL statement is not executed!");
+        }
+        return balanceList;
+    }
+
+    public void processApplication() {
+
+    }
+
     public ArrayList claimList(String username) {
         ArrayList claimList = new ArrayList();
-        
-        if (username.equals("")){
+
+        if (username.equals("")) {
             username = "%";
         }
-        
-        String query = "SELECT * from claims WHERE mem_id LIKE'" + username + "'";
+
+        String query = "SELECT * FROM claims WHERE mem_id LIKE'" + username + "'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
