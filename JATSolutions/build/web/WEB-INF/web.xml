@@ -16,6 +16,10 @@
         <servlet-class>controller.RegistrationController</servlet-class>
     </servlet>
     <servlet-mapping>
+        <servlet-name>RegistrationController</servlet-name>
+        <url-pattern>/RegistrationController.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Front</servlet-name>
         <url-pattern>/Front</url-pattern>
     </servlet-mapping>
@@ -23,10 +27,7 @@
         <servlet-name>Front</servlet-name>
         <url-pattern>/docs/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RegistrationController</servlet-name>
-        <url-pattern>/RegistrationController</url-pattern>
-    </servlet-mapping>
+
     <session-config>
         <session-timeout>
             20

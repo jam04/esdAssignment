@@ -12,7 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="/JATSolutions/docs/registered">
+        <form action="/JATSolutions/RegistrationController.do">
         <h3 align="left"> Register </h3>
         <input name="id" type="text" placeholder="ID" id="id"><br>
         <input name="password" type="password" placeholder="Password" id="password"><br>
