@@ -12,10 +12,12 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <form action="/JATSolutions/docs/userHome">
         <h3 align="left"> Login </h3>
         <input name="username" type="text" placeholder="Username" id="username"><br>
         <input name="password" type="password" placeholder="Password" id="password"><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Login</button>
         <input type="button" class="btn btn-primary btn-block btn-large" value = "Register"/>
+        </form>
     </body>
 </html>
