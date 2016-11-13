@@ -128,7 +128,7 @@ public class DBController {
     /////////////////////////////////Members////////////////////////////////////
     public ArrayList paymentList(String username) {
         ArrayList paymentList = new ArrayList();
-        String query = "SELECT * from claims WHERE mem_id ='" + id + "'";
+        String query = "SELECT * FROM claims WHERE mem_id ='" + username + "'";
         try {
             selectQuery(query);
             while (resultSet.next()) {
