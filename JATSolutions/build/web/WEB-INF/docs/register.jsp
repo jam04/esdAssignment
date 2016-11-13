@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <form action="/JATSolutions/RegistrationController.do">
         <h3 align="left"> Register </h3>
         <input name="id" type="text" placeholder="ID" id="id"><br>
         <input name="password" type="password" placeholder="Password" id="password"><br>
@@ -20,5 +21,14 @@
         <input name="dob" type="text" placeholder="Date yyyy-mm-dd" id="date"><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Register</button>
         <input type="button" class="btn btn-primary btn-block btn-large" value = "Cancel"/>
+        </form>
+        
+        <br>
+        <%
+            if(request.getAttribute("message") != null){
+                out.print(request.getAttribute("message"));
+            }
+        %>
+        <br>
     </body>
 </html>

@@ -6,10 +6,15 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.DBController;
 
 /**
  *
@@ -25,19 +30,30 @@ public class FrontController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
 
         String id = request.getRequestURI().substring(request.getContextPath().length());
         String include;
+        DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
 
         switch (id) {
             case "/docs/Footer":
                 include = "Footer.jsp";
                 break;
             case "/docs/login":
-                include = "login.jsp";
+                    include = "login.jsp";
+                break;
+            case "/docs/userHome":
+                if(jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))){
+                    include = "userHome.jsp";
+                }
+                else{
+                include = "Error.jsp";
+                }
                 break;
             case "/docs/register":
                 include = "register.jsp";
@@ -62,7 +78,11 @@ public class FrontController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -76,7 +96,11 @@ public class FrontController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
