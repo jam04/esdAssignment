@@ -13,6 +13,7 @@
     </head>
     <body>
         <h3 align="left"> Submit Payment</h3>
+        <input name="username" type="text" placeholder="Username" id="username"><br><br>
         Type Of Payment:
         <br>
         <select name="typeOfPayment" size="1">
