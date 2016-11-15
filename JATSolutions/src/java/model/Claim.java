@@ -20,16 +20,16 @@ public class Claim {
     private Date date;
     private String rationale;
     private String status;
-    private float amount;
+    private double amount;
 
     public Claim() {
     }
     
-    public float getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

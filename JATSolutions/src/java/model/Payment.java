@@ -17,8 +17,17 @@ public class Payment {
     private int id;
     private String memID;
     private String typeOfPayment;
-    private float amount;
+    private double amount;
     private Date date;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Payment() {
     }
@@ -31,11 +40,11 @@ public class Payment {
         this.date = date;
     }
 
-    public float getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
