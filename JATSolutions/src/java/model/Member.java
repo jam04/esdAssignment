@@ -21,16 +21,16 @@ public class Member {
     private Date dob;
     private Date dor;
     private String status;
-    private float balance;
+    private double balance;
   
     public Member() {
     }
     
-    public float getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(float balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
