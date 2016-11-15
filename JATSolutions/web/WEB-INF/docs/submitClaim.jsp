@@ -14,8 +14,9 @@
     </head>
     <body>
         <h3 align="left"> Submit a Claim </h3>
+        <input name="username" type="text" placeholder="Username" id="username"><br><br>
         <input name="claimAmount" type="text" placeholder="Enter claim amount" id="amount"><br><br>
-        <textarea name="claimRationale" cols="40" rows="5" placeholder="Enter rationale for claim" ></textarea><br><br>
+        <textarea name="claimRationale" cols="40" rows="5" placeholder="Enter rationale for claim" id="rationale" ></textarea><br><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit Claim</button>
     </body>
 </html>
