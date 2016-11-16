@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <form action="/JATSolutions/SubmitPaymentController.do">
         <h3 align="left"> Submit Payment</h3>
         <input name="username" type="text" placeholder="Username" id="username"><br><br>
         Type Of Payment:
@@ -23,5 +24,6 @@
         <br><br>
         <input name="paymentAmount" type="text" placeholder="Enter Amount" id="paymentAmount"><br><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit Payment</button>  
+        </form>
     </body>
 </html>
