@@ -1,7 +1,7 @@
 <%-- 
     Document   : submitPayment
     Created on : 11-Nov-2016, 14:50:49
-    Author     : User
+    Author     : r2-augustine
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -25,5 +25,6 @@
         <input name="paymentAmount" type="text" placeholder="Enter Amount" id="paymentAmount"><br><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit Payment</button>  
         </form>
+    <td><a href="/JATSOlutions/docs/userHome">Dashboard</a>
     </body>
 </html>
