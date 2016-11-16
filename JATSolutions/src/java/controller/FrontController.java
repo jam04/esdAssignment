@@ -58,6 +58,12 @@ public class FrontController extends HttpServlet {
             case "/docs/register":
                 include = "register.jsp";
                 break;
+            case "/docs/submitClaim":
+                include = "submitClaim.jsp";
+                break;
+            case "/docs/submitPayment":
+                include = "submitPayment.jsp";
+                break;
             default:
                 include = "Error.jsp";
         }

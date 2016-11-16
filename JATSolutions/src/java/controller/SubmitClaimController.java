@@ -7,6 +7,8 @@ package controller;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
+import java.util.Calendar;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,13 +36,14 @@ public class SubmitClaimController extends HttpServlet {
 
         String message;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
+        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
         
         Claim newClaim = new Claim();
         newClaim.setMemID(request.getParameter("username"));
         newClaim.setRationale(request.getParameter("rationale"));
         newClaim.setAmount(Float.parseFloat((request.getParameter("amount"))));
         jdbc.submitClaim(request.getParameter("username"), Float.parseFloat(request.getParameter("amount")), request.getParameter("rationale"));
-        message = "Claim submitted";
+        message = "Claim submitted at " + currentDate;
         
         request.setAttribute("message", message);
         request.getRequestDispatcher("/WEB-INF/docs/submitClaim.jsp").forward(request, response);
