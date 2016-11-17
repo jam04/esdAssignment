@@ -25,6 +25,6 @@
         <input name="paymentAmount" type="text" placeholder="Enter Amount" id="paymentAmount"><br><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit Payment</button>  
         </form>
-    <td><a href="/JATSOlutions/docs/userHome">Dashboard</a>
+    <td><a href="/JATSolutions/docs/home">Dashboard</a>
     </body>
 </html>

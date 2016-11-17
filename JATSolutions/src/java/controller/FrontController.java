@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.DBController;
 
 /**
@@ -40,27 +41,40 @@ public class FrontController extends HttpServlet {
         String include;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
         String message = "";
+        HttpSession session;
 
         switch (id) {
             case "/docs/login":
-                    include = "login.jsp";
+                include = "login.jsp";
                 break;
             case "/docs/loginAdmin":
-                    include = "loginAdmin.jsp";
+                include = "loginAdmin.jsp";
                 break;
-            case "/docs/userHome":
-                if(jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))){
+            case "/docs/home":
+                session = request.getSession();
+                if (session.getAttribute("userName") == null) {//not signed in
+                    if(jdbc.checkAdmin(request.getParameter("username"))){//is an admin
+                        session.setAttribute("userName", request.getParameter("username"));
+                     include = "adminHome.jsp";   
+                    
+                    }else if(jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))) { //is a normal user
+                        session.setAttribute("userName", request.getParameter("username"));
+                        include = "userHome.jsp";
+                    } else {
+                        message = message = "Incorect username or password";
+                        include = "login.jsp";
+                        session.invalidate();
+                        request.setAttribute("message", message);
+                    }
+                
+                } else{
                     include = "userHome.jsp";
-                }
-                else{
-                include = "Error.jsp";
                 }
                 break;
             case "/docs/adminHome":
-                if((request.getParameter("username").equals("admin")) && (request.getParameter("password").equals("EsdMvc5"))){
+                if ((request.getParameter("username").equals("admin")) && (request.getParameter("password").equals("EsdMvc5"))) {
                     include = "adminHome.jsp";
-                }
-                else{
+                } else {
                     include = "loginAdmin.jsp";
                     message = "Incorect admin username or password";
                     request.setAttribute("message", message);
@@ -75,6 +89,26 @@ public class FrontController extends HttpServlet {
             case "/docs/submitPayment":
                 include = "submitPayment.jsp";
                 break;
+            case "/docs/listApplications":
+                    include = "listApplications.jsp";
+                    break;
+            case "/docs/report":
+                    include = "report.jsp";
+                    break;
+            case "/docs/listBalance":
+                    include = "listBalance.jsp";
+                    break;
+            case "/docs/listClaims":
+                    include = "listClaims.jsp";
+                    break;
+            case "/docs/signOut":
+                session = request.getSession();
+                session.invalidate();
+                include = "login.jsp";
+                message = "Sign out sucessful";
+                request.setAttribute("message", message);
+                break;
+                
             default:
                 include = "Error.jsp";
         }

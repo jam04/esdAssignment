@@ -41,7 +41,7 @@ public class SubmitClaimController extends HttpServlet {
         Claim newClaim = new Claim();
         newClaim.setMemID(request.getParameter("username"));
         newClaim.setRationale(request.getParameter("rationale"));
-        newClaim.setAmount(Float.parseFloat((request.getParameter("amount"))));
+        newClaim.setAmount(Float.parseFloat(request.getParameter("amount")));
         jdbc.submitClaim(request.getParameter("username"), Float.parseFloat(request.getParameter("amount")), request.getParameter("rationale"));
         message = "Claim submitted at " + currentDate;
         

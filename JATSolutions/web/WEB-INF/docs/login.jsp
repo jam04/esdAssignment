@@ -12,12 +12,20 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="/JATSolutions/docs/userHome">
-        <h3 align="left"> Login </h3>
-        <input name="username" type="text" placeholder="Username" id="username"><br>
-        <input name="password" type="password" placeholder="Password" id="password"><br>
-        <button type="submit" class="btn btn-primary btn-block btn-large">Login</button>
-        <input type="button" class="btn btn-primary btn-block btn-large" value = "Register"/>
+        <form action="/JATSolutions/docs/home">
+            <h3 align="left"> Login </h3>
+            <input name="username" type="text" placeholder="Username" id="username"><br>
+            <input name="password" type="password" placeholder="Password" id="password"><br>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Login</button>
         </form>
+        <br>
+        <a href="/JATSolutions/docs/register">New user? Register here.</a>
+        <br>
+        <%
+            if (request.getAttribute("message") != null) {
+                out.print(request.getAttribute("message"));
+            }
+        %>
+        <br>
     </body>
 </html>

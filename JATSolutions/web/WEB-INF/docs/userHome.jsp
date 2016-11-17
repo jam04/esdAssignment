@@ -14,7 +14,8 @@
 
     <h1>Welcome to your Dashboard</h1>
         
-<%! DBController jdbc; 
+<%! 
+    DBController jdbc; 
     Member currentMember;
     ArrayList<Claim> myClaims;
     ArrayList<Payment> myPayments;
@@ -22,9 +23,9 @@
 
 <%
 jdbc = new DBController((Connection) application.getAttribute("connection"));
-currentMember = jdbc.getMember(request.getParameter("username"));
-myClaims = jdbc.claimList(request.getParameter("username"));
-myPayments = jdbc.paymentList(request.getParameter("username"));
+currentMember = jdbc.getMember((String)session.getAttribute("userName"));
+myClaims = jdbc.claimList((String)session.getAttribute("userName"));
+myPayments = jdbc.paymentList((String)session.getAttribute("userName"));
 %>
 
 <h2>Welcome <%= currentMember.getId()%>, this is your home page </h2>
