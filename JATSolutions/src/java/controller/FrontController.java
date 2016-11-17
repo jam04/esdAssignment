@@ -39,13 +39,14 @@ public class FrontController extends HttpServlet {
         String id = request.getRequestURI().substring(request.getContextPath().length());
         String include;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
+        String message = "";
 
         switch (id) {
-            case "/docs/Footer":
-                include = "Footer.jsp";
-                break;
             case "/docs/login":
                     include = "login.jsp";
+                break;
+            case "/docs/loginAdmin":
+                    include = "loginAdmin.jsp";
                 break;
             case "/docs/userHome":
                 if(jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))){
@@ -53,6 +54,16 @@ public class FrontController extends HttpServlet {
                 }
                 else{
                 include = "Error.jsp";
+                }
+                break;
+            case "/docs/adminHome":
+                if((request.getParameter("username").equals("admin")) && (request.getParameter("password").equals("EsdMvc5"))){
+                    include = "adminHome.jsp";
+                }
+                else{
+                    include = "loginAdmin.jsp";
+                    message = "Incorect admin username or password";
+                    request.setAttribute("message", message);
                 }
                 break;
             case "/docs/register":
