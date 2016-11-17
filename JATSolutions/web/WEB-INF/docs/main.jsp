@@ -9,9 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>----- XYZ ASSOC-------</title>
+        <title>XYZ Assoc</title>
     </head>
     <body>
+        <h1>----- XYZ ASSOC-------</h1>
         <% String include = (String) request.getAttribute("doco");%>
     <jsp:include page="<%=include%>" flush="true" /> 
     </body>
