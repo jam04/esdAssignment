@@ -85,13 +85,12 @@ public class DBController {
     public boolean checkAdmin(String username) {
 
         boolean admin = false;
-        String query = "SELECT id FROM users WHERE status ='ADMIN'";
+        String query = "SELECT * FROM users WHERE status ='ADMIN'";
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                if (username.equals(resultSet.getString(1))) {
+            while (resultSet.next() && admin == false) {
+                if (username.equals(resultSet.getString("id"))) {
                     admin = true;
-                    break;
                 } else {
                     admin = false;
                 }

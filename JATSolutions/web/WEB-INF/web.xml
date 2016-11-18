@@ -19,6 +19,22 @@
         <servlet-name>RegistrationController</servlet-name>
         <url-pattern>/RegistrationController.do</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>SubmitPaymentController</servlet-name>
+        <servlet-class>controller.SubmitPaymentController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitPaymentController</servlet-name>
+        <url-pattern>/SubmitPaymentController.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SubmitClaimController</servlet-name>
+        <servlet-class>controller.SubmitClaimController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitClaimController</servlet-name>
+        <url-pattern>/SubmitClaimController.do</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Front</servlet-name>
         <url-pattern>/Front</url-pattern>

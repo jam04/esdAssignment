@@ -18,7 +18,7 @@
             <input name="claimAmount" type="text" placeholder="Enter claim amount" id="amount"><br><br>
             <textarea name="claimRationale" cols="40" rows="5" placeholder="Enter rationale for claim" id="rationale" ></textarea><br><br>
             <button type="submit" class="btn btn-primary btn-block btn-large">Submit Claim</button>
-            <a href="/JATSolutions/docs/userHome">Dashboard</a>
+            <a href="/JATSolutions/docs/home">Dashboard</a>
         </form>
     </body>
 </html>

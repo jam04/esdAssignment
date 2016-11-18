@@ -24,12 +24,13 @@
 <%
     for(Payment eachPayment: paymentList){
         out.println("<tr>");
-        out.println("<td>" + eachPayment:.getId() + "</td>");
-        out.println("<td>" + eachPayment:.getMemId() + "</td>");
+        out.println("<td>" + eachPayment.getId() + "</td>");
+        out.println("<td>" + eachPayment.getMemID() + "</td>");
         out.println("</tr>");
     }
     
 %>
+</table>
 
 
 

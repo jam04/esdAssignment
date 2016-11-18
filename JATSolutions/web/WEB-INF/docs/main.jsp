@@ -13,7 +13,19 @@
     </head>
     <body>
         <h1>----- XYZ ASSOC-------</h1>
-        <% String include = (String) request.getAttribute("doco");%>
-    <jsp:include page="<%=include%>" flush="true" /> 
+        <%
+            String name;
+            if (session.getAttribute("userName") == null) {
+                name = "Guest";
+            } else {
+                name = (String) session.getAttribute("userName");
+            }
+        %>
+        <h2>Signed in as: <%=name%> - 
+            <% if (name != "Guest") {
+                    out.print("<a href=\"/JATSolutions/docs/signOut\">(Sign Out)</a>");
+                }%></h2>
+            <% String include = (String) request.getAttribute("doco");%>
+            <jsp:include page="<%=include%>" flush="true" /> 
     </body>
 </html>
