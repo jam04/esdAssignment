@@ -28,8 +28,6 @@ myClaims = jdbc.claimList((String)session.getAttribute("userName"));
 myPayments = jdbc.paymentList((String)session.getAttribute("userName"));
 %>
 
-<h2>Welcome <%= currentMember.getId()%>, this is your home page </h2>
-
 <table>
   <tr>
     <th>Name: </th>
