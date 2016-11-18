@@ -71,15 +71,6 @@ public class FrontController extends HttpServlet {
                     include = "userHome.jsp";
                 }
                 break;
-            case "/docs/adminHome":
-                if ((request.getParameter("username").equals("admin")) && (request.getParameter("password").equals("EsdMvc5"))) {
-                    include = "adminHome.jsp";
-                } else {
-                    include = "loginAdmin.jsp";
-                    message = "Incorect admin username or password";
-                    request.setAttribute("message", message);
-                }
-                break;
             case "/docs/register":
                 include = "register.jsp";
                 break;
