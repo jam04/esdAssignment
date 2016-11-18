@@ -38,21 +38,19 @@ public class SubmitPaymentController extends HttpServlet {
         String message;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-        
+
         HttpSession session;
         session = request.getSession();
-        
-        if (jdbc.idExist(request.getParameter("id")) == false) {
-            Payment newPayment = new Payment();
-            newPayment.setTypeOfPayment(request.getParameter("typeOfPayment"));
-            newPayment.setAmount(Double.parseDouble((request.getParameter("paymentAmount"))));
-            newPayment.setMemID((String) (session.getAttribute("username")));
-            jdbc.makePayment(newPayment);
-            message = "Payment Submitted At " + currentDate;
 
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("/WEB-INF/docs/submitPayment.jsp").forward(request, response);
-        }
+        Payment newPayment = new Payment();
+        newPayment.setTypeOfPayment(request.getParameter("typeOfPayment"));
+        newPayment.setAmount(Double.parseDouble((request.getParameter("paymentAmount"))));
+        newPayment.setMemID((String) (session.getAttribute("username")));
+        jdbc.makePayment(newPayment);
+        message = "Payment Submitted At " + currentDate;
+
+        request.setAttribute("message", message);
+        request.getRequestDispatcher("/docs/submitPayment").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

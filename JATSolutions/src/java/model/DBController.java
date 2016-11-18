@@ -190,7 +190,7 @@ public class DBController {
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
-            ps = con.prepareStatement("INSERT INTO payments VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO payments VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(2, payment.getMemID());
             ps.setString(3, payment.getTypeOfPayment());
             ps.setDouble(4, payment.getAmount());
@@ -231,7 +231,7 @@ public class DBController {
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
-            ps = con.prepareStatement("INSERT INTO claims VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO claims VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(2, claim.getMemID());
             ps.setDate(3, currentDate);
             ps.setString(4, claim.getRationale());
