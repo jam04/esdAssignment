@@ -20,7 +20,7 @@
         <input name="address" type="text" placeholder="Address" id="address"><br>
         <input name="dob" type="text" placeholder="Date yyyy-mm-dd" id="date"><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Register</button>
-        <input type="button" class="btn btn-primary btn-block btn-large" value = "Cancel"/>
+        <a href="/JATSolutions/docs/login">Cancel</a>
         </form>
         
         <br>
