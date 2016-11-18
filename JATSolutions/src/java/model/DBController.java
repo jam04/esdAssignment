@@ -163,15 +163,19 @@ public class DBController {
 
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                Payment payment = new Payment();
-                payment.setId(resultSet.getInt("id"));
-                payment.setMemID(resultSet.getString("mem_id"));
-                payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
-                payment.setAmount(resultSet.getFloat("amount"));
-                payment.setDate(resultSet.getDate("date"));
-                payment.setStatus(resultSet.getString("status"));
-                paymentList.add(payment);
+            if (!resultSet.isBeforeFirst()) {
+                paymentList = null;
+            } else {
+                while (resultSet.next()) {
+                    Payment payment = new Payment();
+                    payment.setId(resultSet.getInt("id"));
+                    payment.setMemID(resultSet.getString("mem_id"));
+                    payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
+                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setDate(resultSet.getDate("date"));
+                    payment.setStatus(resultSet.getString("status"));
+                    paymentList.add(payment);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
@@ -180,27 +184,21 @@ public class DBController {
         return paymentList;
     }//method
 
-    public void makePayment(String username, double amount, String type) {
+    public void makePayment(Payment payment) {
 
         PreparedStatement ps = null;
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
             ps = con.prepareStatement("INSERT INTO payments VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, username);
-            ps.setString(3, type);
-            ps.setDouble(4, amount);
+            ps.setString(2, payment.getMemID());
+            ps.setString(3, payment.getTypeOfPayment());
+            ps.setDouble(4, payment.getAmount());
             ps.setDate(5, currentDate);
             ps.setString(6, "SUBMITTED");
 
             ps.executeUpdate();
             ps.close();
-
-            if (type.equals("MEMBER")) {
-                statement = con.createStatement();
-                String query = "UPDATE members SET status='APPLIED' WHERE id='" + username + "'";
-                statement.executeUpdate(query);
-            }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
@@ -227,18 +225,18 @@ public class DBController {
         return limit;
     }//method
 
-    public void submitClaim(String username, double amount, String rationale) {
+    public void submitClaim(Claim claim) {
 
         PreparedStatement ps = null;
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
             ps = con.prepareStatement("INSERT INTO claims VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, username);
+            ps.setString(2, claim.getMemID());
             ps.setDate(3, currentDate);
-            ps.setString(4, rationale);
+            ps.setString(4, claim.getRationale());
             ps.setString(5, "SUBMITTED");
-            ps.setDouble(6, amount);
+            ps.setDouble(6, claim.getAmount());
 
             ps.executeUpdate();
             ps.close();
@@ -251,20 +249,24 @@ public class DBController {
     public ArrayList memberList() {
 
         ArrayList memberList = new ArrayList();
-        String query = "SELECT * FROM members WHERE status NOT LIKE 'ADMIN'";
+        String query = "SELECT * FROM members";
 
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                Member member = new Member();
-                member.setId(resultSet.getString("id"));
-                member.setName(resultSet.getString("name"));
-                member.setAddress(resultSet.getString("address"));
-                member.setDob(resultSet.getDate("dob"));
-                member.setDor(resultSet.getDate("dor"));
-                member.setStatus(resultSet.getString("status"));
-                member.setBalance(resultSet.getFloat("balance"));
-                memberList.add(member);
+            if (!resultSet.isBeforeFirst()) {
+                memberList = null;
+            } else {
+                while (resultSet.next()) {
+                    Member member = new Member();
+                    member.setId(resultSet.getString("id"));
+                    member.setName(resultSet.getString("name"));
+                    member.setAddress(resultSet.getString("address"));
+                    member.setDob(resultSet.getDate("dob"));
+                    member.setDor(resultSet.getDate("dor"));
+                    member.setStatus(resultSet.getString("status"));
+                    member.setBalance(resultSet.getFloat("balance"));
+                    memberList.add(member);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
@@ -303,16 +305,20 @@ public class DBController {
 
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                Member member = new Member();
-                member.setId(resultSet.getString("id"));
-                member.setName(resultSet.getString("name"));
-                member.setAddress(resultSet.getString("address"));
-                member.setDob(resultSet.getDate("dob"));
-                member.setDor(resultSet.getDate("dor"));
-                member.setStatus(resultSet.getString("status"));
-                member.setBalance(resultSet.getFloat("balance"));
-                balanceList.add(member);
+            if (!resultSet.isBeforeFirst()) {
+                balanceList = null;
+            } else {
+                while (resultSet.next()) {
+                    Member member = new Member();
+                    member.setId(resultSet.getString("id"));
+                    member.setName(resultSet.getString("name"));
+                    member.setAddress(resultSet.getString("address"));
+                    member.setDob(resultSet.getDate("dob"));
+                    member.setDor(resultSet.getDate("dor"));
+                    member.setStatus(resultSet.getString("status"));
+                    member.setBalance(resultSet.getFloat("balance"));
+                    balanceList.add(member);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
@@ -320,32 +326,36 @@ public class DBController {
 
         return balanceList;
     }//method
-    
+
     public ArrayList claimList(String username) {
-        
-        ArrayList claimList = new ArrayList();        
+
+        ArrayList claimList = new ArrayList();
+        String query = "SELECT * FROM claims WHERE mem_id LIKE'" + username + "'";
         if (username.equals("")) {
             username = "%";
         }
 
-        String query = "SELECT * FROM claims WHERE mem_id LIKE'" + username + "'";
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                Claim claim = new Claim();
+            if (!resultSet.isBeforeFirst()) {
+                claimList = null;
+            } else {
+                while (resultSet.next()) {
+                    Claim claim = new Claim();
 
-                claim.setAmount(resultSet.getFloat("amount"));
-                claim.setDate(resultSet.getDate("date"));
-                claim.setId(resultSet.getInt("id"));
-                claim.setMemID(resultSet.getString("mem_id"));
-                claim.setRationale(resultSet.getString("rationale"));
-                claim.setStatus(resultSet.getString("status"));
-                claimList.add(claim);
+                    claim.setAmount(resultSet.getFloat("amount"));
+                    claim.setDate(resultSet.getDate("date"));
+                    claim.setId(resultSet.getInt("id"));
+                    claim.setMemID(resultSet.getString("mem_id"));
+                    claim.setRationale(resultSet.getString("rationale"));
+                    claim.setStatus(resultSet.getString("status"));
+                    claimList.add(claim);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
-        
+
         return claimList;
     }//method
 
@@ -356,15 +366,19 @@ public class DBController {
 
         try {
             selectQuery(query);
-            while (resultSet.next()) {
-                Payment payment = new Payment();
-                payment.setId(resultSet.getInt("id"));
-                payment.setMemID(resultSet.getString("mem_id"));
-                payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
-                payment.setAmount(resultSet.getFloat("amount"));
-                payment.setDate(resultSet.getDate("date"));
-                payment.setStatus(resultSet.getString("status"));
-                applicationList.add(payment);
+            if (!resultSet.isBeforeFirst()) {
+                applicationList = null;
+            } else {
+                while (resultSet.next()) {
+                    Payment payment = new Payment();
+                    payment.setId(resultSet.getInt("id"));
+                    payment.setMemID(resultSet.getString("mem_id"));
+                    payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
+                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setDate(resultSet.getDate("date"));
+                    payment.setStatus(resultSet.getString("status"));
+                    applicationList.add(payment);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
@@ -456,7 +470,7 @@ public class DBController {
     }//method
 
     public double calcTurnover() {
-        
+
         double turnover = 0.0;
         String queryIncome = "SELECT SUM(amount) FROM payments WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
         String queryExpense = "SELECT SUM(amount) FROM claims WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
@@ -475,16 +489,16 @@ public class DBController {
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
-        
+
         turnover = income - expense;
-        
+
         return turnover;
     }//method
-    
+
     private void suspendMember() {
-        
+
         String query = "SELECT id FROM members WHERE status='APPROVED' AND dor <='" + today + "'";
-        
+
         try {
             selectQuery(query);
             while (resultSet.next()) {
@@ -498,12 +512,12 @@ public class DBController {
     }//method
 
     private void updateStatus(String username, String status) {
-        
+
         PreparedStatement ps = null;
         String queryApprove = "UPDATE members SET status ='APPROVED', dor =DATE_ADD(dor, INTERVAL 1 YEAR) WHERE id='" + username + "'";
         String querySuspend = "UPDATE members SET status ='SUSPENDED' WHERE id='" + username + "'";
         String queryUser = "UPDATE users SET status ='" + status + "' WHERE id='" + username + "'";
-        
+
         try {
             if (status.equals("APPROVED")) {
                 ps = con.prepareStatement(queryApprove);
@@ -525,7 +539,7 @@ public class DBController {
     }//method
 
     private void updateBalance(String username, double amount) {
-        
+
         PreparedStatement ps = null;
         String queryUpdate = "UPDATE members SET balance=(balance+" + amount + ") WHERE id='" + username + "'";
 
@@ -539,7 +553,7 @@ public class DBController {
     }//method
 
     private double calcClaimFee() {
-        
+
         double fee = 0;
         double sum = 0;
         double count = 0;
@@ -565,7 +579,7 @@ public class DBController {
     }//method
 
     private void selectQuery(String query) {
-        
+
         try {
             statement = con.createStatement();
             resultSet = statement.executeQuery(query);
