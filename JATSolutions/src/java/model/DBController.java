@@ -164,7 +164,7 @@ public class DBController {
         try {
             selectQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                paymentList = null;
+                paymentList = new ArrayList();
             } else {
                 while (resultSet.next()) {
                     Payment payment = new Payment();
@@ -254,7 +254,7 @@ public class DBController {
         try {
             selectQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                memberList = null;
+                memberList = new ArrayList();
             } else {
                 while (resultSet.next()) {
                     Member member = new Member();
@@ -306,7 +306,7 @@ public class DBController {
         try {
             selectQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                balanceList = null;
+                balanceList = new ArrayList();
             } else {
                 while (resultSet.next()) {
                     Member member = new Member();
@@ -338,7 +338,7 @@ public class DBController {
         try {
             selectQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                claimList = null;
+                claimList = new ArrayList();
             } else {
                 while (resultSet.next()) {
                     Claim claim = new Claim();
@@ -367,7 +367,7 @@ public class DBController {
         try {
             selectQuery(query);
             if (!resultSet.isBeforeFirst()) {
-                applicationList = null;
+                applicationList = new ArrayList();
             } else {
                 while (resultSet.next()) {
                     Payment payment = new Payment();
