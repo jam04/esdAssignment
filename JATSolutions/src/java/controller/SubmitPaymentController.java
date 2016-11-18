@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.DBController;
 import model.Member;
 import model.Payment;
@@ -38,12 +39,15 @@ public class SubmitPaymentController extends HttpServlet {
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
         
+        HttpSession session;
+        session = request.getSession();
+        
         if (jdbc.idExist(request.getParameter("id")) == false) {
             Payment newPayment = new Payment();
             newPayment.setTypeOfPayment(request.getParameter("typeOfPayment"));
-            newPayment.setAmount(Float.parseFloat((request.getParameter("paymentAmount"))));
-            newPayment.setMemID(request.getParameter("username"));
-            jdbc.makePayment(request.getParameter("username"), Float.parseFloat(request.getParameter("paymentAmount")), request.getParameter("typeOfPayment"));
+            newPayment.setAmount(Double.parseDouble((request.getParameter("paymentAmount"))));
+            newPayment.setMemID((String) (session.getAttribute("username")));
+            jdbc.makePayment(newPayment);
             message = "Payment Submitted At " + currentDate;
 
             request.setAttribute("message", message);
