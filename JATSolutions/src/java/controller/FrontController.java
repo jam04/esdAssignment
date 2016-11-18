@@ -53,11 +53,10 @@ public class FrontController extends HttpServlet {
             case "/docs/home":
                 session = request.getSession();
                 if (session.getAttribute("userName") == null) {//not signed in
-                    if(jdbc.checkAdmin(request.getParameter("username"))){//is an admin
+                    if (jdbc.checkAdmin(request.getParameter("username"))) {//is an admin
                         session.setAttribute("userName", request.getParameter("username"));
-                     include = "adminHome.jsp";   
-                    
-                    }else if(jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))) { //is a normal user
+                        include = "adminHome.jsp";
+                    } else if (jdbc.validateLogin(request.getParameter("username"), request.getParameter("password"))) { //is a normal user
                         session.setAttribute("userName", request.getParameter("username"));
                         include = "userHome.jsp";
                     } else {
@@ -66,8 +65,10 @@ public class FrontController extends HttpServlet {
                         session.invalidate();
                         request.setAttribute("message", message);
                     }
-                
-                } else{
+
+                } else if (jdbc.checkAdmin((String) (session.getAttribute("userName")))) {
+                    include = "adminHome.jsp";
+                } else {
                     include = "userHome.jsp";
                 }
                 break;
@@ -81,17 +82,17 @@ public class FrontController extends HttpServlet {
                 include = "submitPayment.jsp";
                 break;
             case "/docs/listApplications":
-                    include = "listApplications.jsp";
-                    break;
+                include = "listApplications.jsp";
+                break;
             case "/docs/report":
-                    include = "report.jsp";
-                    break;
+                include = "report.jsp";
+                break;
             case "/docs/listBalance":
-                    include = "listBalance.jsp";
-                    break;
+                include = "listBalance.jsp";
+                break;
             case "/docs/listClaims":
-                    include = "listClaims.jsp";
-                    break;
+                include = "listClaims.jsp";
+                break;
             case "/docs/signOut":
                 session = request.getSession();
                 session.invalidate();
@@ -99,12 +100,14 @@ public class FrontController extends HttpServlet {
                 message = "Sign out sucessful";
                 request.setAttribute("message", message);
                 break;
-                
+
             default:
                 include = "Error.jsp";
         }
-        request.setAttribute("doco", include);
-        request.getRequestDispatcher("/WEB-INF/docs/main.jsp").forward(request, response);
+        request.setAttribute(
+                "doco", include);
+        request.getRequestDispatcher(
+                "/WEB-INF/docs/main.jsp").forward(request, response);
 
     }
 
@@ -122,8 +125,10 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FrontController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -140,8 +145,10 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
         try {
             processRequest(request, response);
+
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FrontController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
