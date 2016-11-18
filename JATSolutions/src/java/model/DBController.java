@@ -190,12 +190,12 @@ public class DBController {
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
-            ps = con.prepareStatement("INSERT INTO payments VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, payment.getMemID());
-            ps.setString(3, payment.getTypeOfPayment());
-            ps.setDouble(4, payment.getAmount());
-            ps.setDate(5, currentDate);
-            ps.setString(6, "SUBMITTED");
+            ps = con.prepareStatement("INSERT INTO payments(mem_id,type_of_payment,amount,date,status) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, payment.getMemID());
+            ps.setString(2, payment.getTypeOfPayment());
+            ps.setDouble(3, payment.getAmount());
+            ps.setDate(4, currentDate);
+            ps.setString(5, "SUBMITTED");
 
             ps.executeUpdate();
             ps.close();
@@ -231,7 +231,7 @@ public class DBController {
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
 
         try {
-            ps = con.prepareStatement("INSERT INTO claims VALUES (?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO claims(mem_id,date,rationale,status,amount) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(2, claim.getMemID());
             ps.setDate(3, currentDate);
             ps.setString(4, claim.getRationale());
