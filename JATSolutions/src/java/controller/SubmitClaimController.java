@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Claim;
 import model.DBController;
 
@@ -37,17 +38,29 @@ public class SubmitClaimController extends HttpServlet {
         String message;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-        
-        Claim newClaim = new Claim();
-        newClaim.setMemID(request.getParameter("username"));
-        newClaim.setRationale(request.getParameter("rationale"));
-        newClaim.setAmount(Float.parseFloat(request.getParameter("amount")));
-        jdbc.submitClaim(request.getParameter("username"), Float.parseFloat(request.getParameter("amount")), request.getParameter("rationale"));
-        message = "Claim submitted at " + currentDate;
-        
-        request.setAttribute("message", message);
-        request.getRequestDispatcher("/WEB-INF/docs/submitClaim.jsp").forward(request, response);
-        
+
+        HttpSession session;
+        session = request.getSession();
+
+        if (jdbc.claimLimit((String) session.getAttribute("userName")) == false) {
+
+            Claim newClaim = new Claim();
+            newClaim.setMemID((String) (session.getAttribute("userName")));
+            newClaim.setRationale(request.getParameter("rationale"));
+            newClaim.setAmount(Double.parseDouble(request.getParameter("amount")));
+            jdbc.submitClaim(newClaim);
+            message = "Claim submitted at " + currentDate;
+
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/WEB-INF/docs/submitClaim.jsp").forward(request, response);
+
+        } else {
+            message = "Claim limit reached for the current year";
+
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/WEB-INF/docs/submitClaim.jsp").forward(request, response);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
