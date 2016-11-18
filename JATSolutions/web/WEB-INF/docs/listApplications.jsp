@@ -32,7 +32,4 @@
 %>
 </table>
 
-
-
-
-        
+   <div><a href="/JATSolutions/docs/home">Admin Dashboard</a></div>

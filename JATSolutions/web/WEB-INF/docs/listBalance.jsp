@@ -37,3 +37,4 @@
     %>
 </table>
 
+<a href="/JATSolutions/docs/home">Admin Dashboard</a><br>
