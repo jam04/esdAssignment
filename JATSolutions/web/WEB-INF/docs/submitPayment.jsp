@@ -17,8 +17,8 @@
         Type Of Payment:
         <br>
         <select name="typeOfPayment" size="1">
-            <option value="Membership Fee"> Membership Fee</option>
-            <option value="Claim Payment"> Claim Payment</option>
+            <option value="MEMBER"> Membership Fee</option>
+            <option value="CLAIM"> Claim Payment</option>
         </select>
         <br><br>
         <input name="paymentAmount" type="text" placeholder="Enter Amount" id="paymentAmount"><br><br>

@@ -15,6 +15,10 @@
         <servlet-name>RegistrationController</servlet-name>
         <servlet-class>controller.RegistrationController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProcessClaimController</servlet-name>
+        <servlet-class>controller.ProcessClaimController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationController</servlet-name>
         <url-pattern>/RegistrationController.do</url-pattern>
@@ -43,7 +47,10 @@
         <servlet-name>Front</servlet-name>
         <url-pattern>/docs/*</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>ProcessClaimController</servlet-name>
+        <url-pattern>/ProcessClaimController.do</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             20

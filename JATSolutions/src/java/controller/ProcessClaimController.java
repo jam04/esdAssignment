@@ -6,23 +6,19 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.Date;
-import java.util.Calendar;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import model.DBController;
-import model.Member;
-import model.Payment;
 
 /**
  *
- * @author r2-augustine
+ * @author James
  */
-public class SubmitPaymentController extends HttpServlet {
+public class ProcessClaimController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,22 +31,20 @@ public class SubmitPaymentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String message;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-
-        HttpSession session;
-        session = request.getSession();
-
-        Payment newPayment = new Payment();
-        newPayment.setTypeOfPayment(request.getParameter("typeOfPayment"));
-        newPayment.setAmount(Double.parseDouble((request.getParameter("paymentAmount"))));
-        newPayment.setMemID((String) (session.getAttribute("userName")));
-        jdbc.makePayment(newPayment);
-        message = "Payment Submitted At " + currentDate;
-
+        
+        boolean claimProcessed = jdbc.processClaim( Integer.parseInt(request.getParameter("claimId")), request.getParameter("status"));
+        
+        if(claimProcessed){
+            message = "Claim " + request.getParameter("claimId") + " has been processed";
+        }else{
+            message = "Error processing Claim " + request.getParameter("claimId") + ", has this claim already been processed?";
+        }
         request.setAttribute("message", message);
-        request.getRequestDispatcher("/docs/submitPayment").forward(request, response);
+        request.getRequestDispatcher("/docs/listClaims").forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
