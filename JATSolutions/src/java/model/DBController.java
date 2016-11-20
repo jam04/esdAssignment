@@ -34,6 +34,10 @@ public class DBController {
         this.con = con;
     }
 
+    public DBController() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     ///////////////////////////////////Login////////////////////////////////////
     public boolean validateLogin(String username, String password) throws ClassNotFoundException, SQLException {
 
@@ -232,11 +236,11 @@ public class DBController {
 
         try {
             ps = con.prepareStatement("INSERT INTO claims(mem_id,date,rationale,status,amount) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(2, claim.getMemID());
-            ps.setDate(3, currentDate);
-            ps.setString(4, claim.getRationale());
-            ps.setString(5, "SUBMITTED");
-            ps.setDouble(6, claim.getAmount());
+            ps.setString(1, claim.getMemID());
+            ps.setDate(2, currentDate);
+            ps.setString(3, claim.getRationale());
+            ps.setString(4, "SUBMITTED");
+            ps.setDouble(5, claim.getAmount());
 
             ps.executeUpdate();
             ps.close();
@@ -330,10 +334,10 @@ public class DBController {
     public ArrayList claimList(String username) {
 
         ArrayList claimList = new ArrayList();
-        String query = "SELECT * FROM claims WHERE mem_id LIKE'" + username + "'";
         if (username.equals("")) {
             username = "%";
         }
+        String query = "SELECT * FROM claims WHERE mem_id LIKE'" + username + "'";
 
         try {
             selectQuery(query);

@@ -47,9 +47,6 @@ public class FrontController extends HttpServlet {
             case "/docs/login":
                 include = "login.jsp";
                 break;
-            case "/docs/loginAdmin":
-                include = "loginAdmin.jsp";
-                break;
             case "/docs/home":
                 session = request.getSession();
                 if (session.getAttribute("userName") == null) {//not signed in
