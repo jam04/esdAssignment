@@ -4,6 +4,18 @@
         <param-name>dbname</param-name>
         <param-value>xyz_assoc</param-value>
     </context-param>
+    <context-param>
+        <param-name>logfile</param-name>
+        <param-value>/logfile.txt</param-value>
+    </context-param>
+    <filter>
+        <filter-name>LoggingFilter</filter-name>
+        <filter-class>model.LoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoggingFilter</filter-name>
+        <url-pattern>/docs/*</url-pattern>
+    </filter-mapping>
     <listener>
         <listener-class>model.DbListener</listener-class>
     </listener>
