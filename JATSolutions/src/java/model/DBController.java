@@ -257,7 +257,7 @@ public class DBController {
         String response = null;
 
         if (claimDate(username, currentDate) == true) {
-            if (claimLimit(username) == true) {
+            if (claimLimit(username) == false) {
                 try {
                     ps = con.prepareStatement("INSERT INTO claims(mem_id,date,rationale,status,amount) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1, username);
