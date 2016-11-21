@@ -34,10 +34,6 @@ public class DBController {
         this.con = con;
     }
 
-    public DBController() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     ///////////////////////////////////Login////////////////////////////////////
     public boolean validateLogin(String username, String password) throws ClassNotFoundException, SQLException {
 
@@ -208,7 +204,7 @@ public class DBController {
         }
     }//method
 
-    public boolean claimLimit(String username) {
+    private boolean claimLimit(String username) {
 
         boolean limit = false;
         int count = 0;
@@ -229,24 +225,60 @@ public class DBController {
         return limit;
     }//method
 
-    public void submitClaim(Claim claim) {
-
-        PreparedStatement ps = null;
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-
+    private boolean claimDate(String username, Date claimDate) {
+        boolean valid = false;
+        String query = "SELECT dor FROM members WHERE id='" + username + "'";
+        Date dorDate = null;
         try {
-            ps = con.prepareStatement("INSERT INTO claims(mem_id,date,rationale,status,amount) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, claim.getMemID());
-            ps.setDate(2, currentDate);
-            ps.setString(3, claim.getRationale());
-            ps.setString(4, "SUBMITTED");
-            ps.setDouble(5, claim.getAmount());
+            selectQuery(query);
+            while (resultSet.next()) {
+                dorDate = resultSet.getDate(1);
+            }
+            int start = claimDate.getYear() * 12 + claimDate.getMonth();
+            int end = dorDate.getYear() * 12 + dorDate.getMonth();
+            if (end > start) {
+                if ((end - start) >= 6) {
+                    valid = true;
+                }
+            }
 
-            ps.executeUpdate();
-            ps.close();
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
+        return valid;
+    }
+
+    public String submitClaim(Claim claim) {
+
+        PreparedStatement ps = null;
+        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
+        String username = claim.getMemID();
+        boolean limit = claimLimit(username);
+        String response = null;
+
+        if (claimDate(username, currentDate) == true) {
+            if (claimLimit(username) == false) {
+                try {
+                    ps = con.prepareStatement("INSERT INTO claims(mem_id,date,rationale,status,amount) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, username);
+                    ps.setDate(2, currentDate);
+                    ps.setString(3, claim.getRationale());
+                    ps.setString(4, "SUBMITTED");
+                    ps.setDouble(5, claim.getAmount());
+
+                    ps.executeUpdate();
+                    ps.close();
+                } catch (SQLException s) {
+                    System.out.println("SQL statement is not executed!");
+                }
+                response = "Claim submitted.";
+            } else {
+                response = "You have already made 2 claims this year.";
+            }
+        } else {
+            response = "You must be an approved member for at least 6 months before making claim.";
+        }
+        return response;
     }//method
 
     ////////////////////////////////Admin///////////////////////////////////////
@@ -366,7 +398,7 @@ public class DBController {
     public ArrayList applicationList() {
 
         ArrayList applicationList = new ArrayList();
-        String query = "SELECT * FROM payments WHERE EXISTS(SELECT * FROM members WHERE payments.mem_id = members.id AND members.status='APPLIED') AND type_of_payment='APPLICATION' AND status='SUBMITTED'";
+        String query = "SELECT * FROM payments WHERE EXISTS(SELECT * FROM members WHERE members.id=payments.mem_id AND members.status='APPLIED' AND payments.type_of_payment='MEMBER' AND payments.status='SUBMITTED')";
 
         try {
             selectQuery(query);
@@ -473,30 +505,55 @@ public class DBController {
         }
     }//method
 
-    public double calcTurnover() {
-
-        double turnover = 0.0;
-        String queryIncome = "SELECT SUM(amount) FROM payments WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
-        String queryExpense = "SELECT SUM(amount) FROM claims WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
-        double income = 0.0;
-        double expense = 0.0;
-
+    public ArrayList listIncome() {
+        ArrayList incomeList = new ArrayList();
+        String query = "SELECT * FROM payments WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
         try {
-            selectQuery(queryIncome);
-            while (resultSet.next()) {
-                income = resultSet.getFloat(1);
-            }
-            selectQuery(queryExpense);
-            while (resultSet.next()) {
-                expense = resultSet.getFloat(1);
+            selectQuery(query);
+            if (!resultSet.isBeforeFirst()) {
+                incomeList = new ArrayList();
+            } else {
+                while (resultSet.next()) {
+                    Payment payment = new Payment();
+                    payment.setId(resultSet.getInt("id"));
+                    payment.setMemID(resultSet.getString("mem_id"));
+                    payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
+                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setDate(resultSet.getDate("date"));
+
+                    incomeList.add(payment);
+                }
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
+        return incomeList;
+    }//method
 
-        turnover = income - expense;
+    public ArrayList listExpense() {
+        ArrayList expenseList = new ArrayList();
+        String query = "SELECT * FROM claims WHERE status='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
+        try {
+            selectQuery(query);
+            if (!resultSet.isBeforeFirst()) {
+                expenseList = new ArrayList();
+            } else {
+                while (resultSet.next()) {
+                    Claim claim = new Claim();
+                    claim.setId(resultSet.getInt("id"));
+                    claim.setMemID(resultSet.getString("mem_id"));
+                    claim.setDate(resultSet.getDate("date"));
+                    claim.setRationale(resultSet.getString("rationale"));
+                    claim.setStatus(resultSet.getString("status"));
+                    claim.setAmount(resultSet.getDouble("amount"));
 
-        return turnover;
+                    expenseList.add(claim);
+                }
+            }
+        } catch (SQLException s) {
+            System.out.println("SQL statement is not executed!");
+        }
+        return expenseList;
     }//method
 
     private void suspendMember() {
@@ -511,7 +568,7 @@ public class DBController {
                 updateBalance(username, 10);
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+
         }
     }//method
 
@@ -546,11 +603,23 @@ public class DBController {
 
         PreparedStatement ps = null;
         String queryUpdate = "UPDATE members SET balance=(balance+" + amount + ") WHERE id='" + username + "'";
+        String query = "SELECT * FROM members WHERE id='" + username + "'";
 
         try {
             ps = con.prepareStatement(queryUpdate);
             ps.executeUpdate();
             ps.close();
+
+            selectQuery(query);
+            while (resultSet.next()) {
+                String status = resultSet.getString("status");
+                Double balance = resultSet.getDouble("balance");
+                if (status.equals("SUSPENDED")) {
+                    if (balance == 0) {
+                        updateStatus(username, "APPROVED");
+                    }
+                }
+            }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed!");
         }
