@@ -63,9 +63,9 @@ public class FrontController extends HttpServlet {
                         request.setAttribute("message", message);
                     }
 
-                } else if (jdbc.checkAdmin((String) (session.getAttribute("userName")))) {
+                } else if (jdbc.checkAdmin((String) (session.getAttribute("userName")))) {//signed in and admin
                     include = "adminHome.jsp";
-                } else {
+                } else {//signed in and user
                     include = "userHome.jsp";
                 }
                 break;
