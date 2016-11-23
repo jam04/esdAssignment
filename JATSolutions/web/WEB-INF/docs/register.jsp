@@ -14,11 +14,9 @@
     <body>
         <form action="/JATSolutions/RegistrationController.do">
         <h3 align="left"> Register </h3>
-        <input name="id" type="text" placeholder="ID" id="id"><br>
-        <input name="password" type="password" placeholder="Password" id="password"><br>
         <input name="name" type="text" placeholder="Name" id="name"><br>
         <input name="address" type="text" placeholder="Address" id="address"><br>
-        <input name="dob" type="text" placeholder="Date yyyy-mm-dd" id="date"><br>
+        <input name="dob" type="text" placeholder="Date of Birth: dd-mm-yyyy" id="date"><br>
         <button type="submit" class="btn btn-primary btn-block btn-large">Register</button>
         <a href="/JATSolutions/docs/login">Cancel</a>
         </form>
