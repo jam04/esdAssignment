@@ -37,29 +37,18 @@ public class SubmitClaimController extends HttpServlet {
 
         String message;
         DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-
+        
         HttpSession session;
         session = request.getSession();
-
-        if (jdbc.claimLimit((String) session.getAttribute("userName")) == false) {
             
             Claim newClaim = new Claim();
             newClaim.setMemID((String) (session.getAttribute("userName")));
             newClaim.setRationale(request.getParameter("claimRationale"));
             newClaim.setAmount(Double.parseDouble(request.getParameter("claimAmount")));
-            jdbc.submitClaim(newClaim);
-            message = "Claim submitted at " + currentDate;
+            message = jdbc.submitClaim(newClaim);                    
 
             request.setAttribute("message", message);
             request.getRequestDispatcher("/docs/submitClaim").forward(request, response);
-
-        } else {
-            message = "Claim limit reached for the current year";
-
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("/docs/submitClaim").forward(request, response);
-        }
 
     }
 
