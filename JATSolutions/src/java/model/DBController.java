@@ -5,14 +5,12 @@
  */
 package model;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ public class DBController {
     Connection con;
     Statement statement;
     ResultSet resultSet;
-    DecimalFormat df = new DecimalFormat();
 
     LocalDate now = LocalDate.now();
     String startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).toString();
