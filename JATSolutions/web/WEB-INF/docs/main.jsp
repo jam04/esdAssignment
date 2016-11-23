@@ -4,6 +4,7 @@
     Author     : James
 --%>
 
+<%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,12 @@
         <title>XYZ Assoc</title>
     </head>
     <body>
+        
+        <%!
+           String forecast;
+           String[] forecastList;
+        %>
+        
         <h1>----- XYZ ASSOC-------</h1>
         <%
             String name;
@@ -24,8 +31,22 @@
         <h2>Signed in as: <%=name%> - 
             <% if (name != "Guest") {
                     out.print("<a href=\"/JATSolutions/docs/signOut\">(Sign Out)</a>");
-                }%></h2>
+                }
+            %></h2>
             <% String include = (String) request.getAttribute("doco");%>
+            
+            <br>
+            
+            <%
+                
+                forecast = (String) request.getAttribute("weatherReport");
+                forecastList = forecast.split(",");
+                
+                out.print("The weather today is: " + forecastList[0] + 
+                        ". Tomorrow it will be: " + forecastList[1] +
+                        " and the day after that is: " + forecastList[2]);
+            %>
+            
             <jsp:include page="<%=include%>" flush="true" /> 
     </body>
 </html>

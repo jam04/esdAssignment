@@ -6,6 +6,7 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -15,7 +16,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import model.DBController;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -57,7 +65,7 @@ public class FrontController extends HttpServlet {
                         session.setAttribute("userName", request.getParameter("username"));
                         include = "userHome.jsp";
                     } else {
-                        message = message = "Incorect username or password";
+                        message = "Incorect username or password";
                         include = "login.jsp";
                         session.invalidate();
                         request.setAttribute("message", message);
@@ -101,6 +109,24 @@ public class FrontController extends HttpServlet {
             default:
                 include = "Error.jsp";
         }
+        
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db;
+        String weatherReport = "";
+        try {
+            db = dbf.newDocumentBuilder();
+            Document doc;
+            doc = db.parse(new URL("http://www.myweather2.com/developer/forecast.ashx?uac=j9F1QFk75Z&output=xml&query=SW1").openStream());
+            
+            weatherReport += doc.getElementsByTagName("curren_weather").item(0).getChildNodes().item(5).getTextContent() + ",";
+            weatherReport += doc.getElementsByTagName("forecast").item(0).getChildNodes().item(4).getChildNodes().item(0).getTextContent() + ",";
+            weatherReport += doc.getElementsByTagName("forecast").item(1).getChildNodes().item(4).getChildNodes().item(0).getTextContent();
+            
+            request.setAttribute("weatherReport", weatherReport);
+        } catch (ParserConfigurationException | SAXException ex) {
+            Logger.getLogger(FrontController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         request.setAttribute(
                 "doco", include);
         request.getRequestDispatcher(
