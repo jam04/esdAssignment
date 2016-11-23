@@ -18,6 +18,13 @@
             <textarea name="claimRationale" cols="40" rows="5" placeholder="Enter rationale for claim" id="rationale" ></textarea><br><br>
             <button type="submit" class="btn btn-primary btn-block btn-large">Submit Claim</button>
             <a href="/JATSolutions/docs/home">Dashboard</a>
+            <br>
+            <%
+                if (request.getAttribute("message") != null) {
+                    out.print(request.getAttribute("message"));
+                }
+            %>
+            <br>
         </form>
     </body>
 </html>
