@@ -5,12 +5,14 @@
  */
 package model;
 
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class DBController {
     Connection con;
     Statement statement;
     ResultSet resultSet;
+    DecimalFormat df = new DecimalFormat();
+
     LocalDate now = LocalDate.now();
     String startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).toString();
     String endOfYear = now.with(TemporalAdjusters.lastDayOfYear()).toString();
@@ -73,7 +77,7 @@ public class DBController {
                 member.setDob(resultSet.getDate("dob"));
                 member.setDor(resultSet.getDate("dor"));
                 member.setStatus(resultSet.getString("status"));
-                member.setBalance(resultSet.getFloat("balance"));
+                member.setBalance(resultSet.getDouble("balance"));
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed! " + s.getMessage());
@@ -126,7 +130,7 @@ public class DBController {
     public void registerMember(Member member, String password) {
 
         PreparedStatement ps = null;
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
+        Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
 
         try {
             ps = con.prepareStatement("INSERT INTO members VALUES (?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
@@ -136,7 +140,7 @@ public class DBController {
             ps.setDate(4, member.getDob());
             ps.setDate(5, currentDate);
             ps.setString(6, "APPLIED");
-            ps.setDouble(7, member.getBalance());
+            ps.setDouble(7, 3.14);
 
             ps.executeUpdate();
             ps.close();
@@ -171,7 +175,7 @@ public class DBController {
                     payment.setId(resultSet.getInt("id"));
                     payment.setMemID(resultSet.getString("mem_id"));
                     payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
-                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setAmount(resultSet.getDouble("amount"));
                     payment.setDate(resultSet.getDate("date"));
                     payment.setStatus(resultSet.getString("status"));
                     paymentList.add(payment);
@@ -184,33 +188,43 @@ public class DBController {
         return paymentList;
     }//method
 
-    public void makePayment(Payment payment) {
+    public String makePayment(Payment payment) {
 
         PreparedStatement ps = null;
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
+        Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
         Member user = getMember(payment.getMemID());
+        double newBalance = user.getBalance() - payment.getAmount();
         double balance = 0;
-        try {
-            ps = con.prepareStatement("INSERT INTO payments(mem_id,type_of_payment,amount,date,status) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, payment.getMemID());
-            ps.setString(2, payment.getTypeOfPayment());
-            ps.setDouble(3, payment.getAmount());
-            ps.setDate(4, currentDate);
-            balance = balance - payment.getAmount();
-            if (user.getStatus().equals("APPLIED")) {
-                ps.setString(5, "SUBMITTED");
-            } else {
-                ps.setString(5, "APPROVED");
-                updateBalance(payment.getMemID(), balance);
-                if (user.getStatus().equals("SUSPENDED")) {
-                    updateStatus(payment.getMemID(), "APPROVED");
+        String message = "";
+
+        if (newBalance >= 0) {
+            try {
+                ps = con.prepareStatement("INSERT INTO payments(mem_id,type_of_payment,amount,date,status) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+                ps.setString(1, payment.getMemID());
+                ps.setString(2, payment.getTypeOfPayment());
+                ps.setDouble(3, payment.getAmount());
+                ps.setDate(4, currentDate);
+                balance = balance - payment.getAmount();
+                if (user.getStatus().equals("APPLIED")) {
+                    ps.setString(5, "SUBMITTED");
+                } else {
+                    ps.setString(5, "APPROVED");
+                    updateBalance(payment.getMemID(), balance);
+                    if (user.getStatus().equals("SUSPENDED")) {
+                        updateStatus(payment.getMemID(), "APPROVED");
+                    }
                 }
+                ps.executeUpdate();
+                ps.close();
+
+                message = "Payment submitted.";
+            } catch (SQLException s) {
+                System.out.println("SQL statement is not executed! " + s.getMessage());
             }
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException s) {
-            System.out.println("SQL statement is not executed! " + s.getMessage());
+        } else {
+            message = "Payment failed.";
         }
+        return message;
     }//method
 
     private boolean claimLimit(String username) {
@@ -260,7 +274,7 @@ public class DBController {
     public String submitClaim(Claim claim) {
 
         PreparedStatement ps = null;
-        Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
+        Date currentDate = new Date(Calendar.getInstance().getTimeInMillis());
         String username = claim.getMemID();
         boolean limit = claimLimit(username);
         String response = null;
@@ -309,7 +323,7 @@ public class DBController {
                     member.setDob(resultSet.getDate("dob"));
                     member.setDor(resultSet.getDate("dor"));
                     member.setStatus(resultSet.getString("status"));
-                    member.setBalance(resultSet.getFloat("balance"));
+                    member.setBalance(resultSet.getDouble("balance"));
                     memberList.add(member);
                 }
             }
@@ -334,7 +348,7 @@ public class DBController {
                 member.setDob(resultSet.getDate("dob"));
                 member.setDor(resultSet.getDate("dor"));
                 member.setStatus(resultSet.getString("status"));
-                member.setBalance(resultSet.getFloat("balance"));
+                member.setBalance(resultSet.getDouble("balance"));
             }
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed! " + s.getMessage());
@@ -361,7 +375,7 @@ public class DBController {
                     member.setDob(resultSet.getDate("dob"));
                     member.setDor(resultSet.getDate("dor"));
                     member.setStatus(resultSet.getString("status"));
-                    member.setBalance(resultSet.getFloat("balance"));
+                    member.setBalance(resultSet.getDouble("balance"));
                     balanceList.add(member);
                 }
             }
@@ -388,7 +402,7 @@ public class DBController {
                 while (resultSet.next()) {
                     Claim claim = new Claim();
 
-                    claim.setAmount(resultSet.getFloat("amount"));
+                    claim.setAmount(resultSet.getDouble("amount"));
                     claim.setDate(resultSet.getDate("date"));
                     claim.setId(resultSet.getInt("id"));
                     claim.setMemID(resultSet.getString("mem_id"));
@@ -419,7 +433,7 @@ public class DBController {
                     payment.setId(resultSet.getInt("id"));
                     payment.setMemID(resultSet.getString("mem_id"));
                     payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
-                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setAmount(resultSet.getDouble("amount"));
                     payment.setDate(resultSet.getDate("date"));
                     payment.setStatus(resultSet.getString("status"));
                     applicationList.add(payment);
@@ -517,7 +531,7 @@ public class DBController {
                     payment.setId(resultSet.getInt("id"));
                     payment.setMemID(resultSet.getString("mem_id"));
                     payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
-                    payment.setAmount(resultSet.getFloat("amount"));
+                    payment.setAmount(resultSet.getDouble("amount"));
                     payment.setDate(resultSet.getDate("date"));
                     payment.setStatus(resultSet.getString("status"));
                     incomeList.add(payment);
@@ -642,7 +656,7 @@ public class DBController {
             }
             selectQuery(querySum);
             while (resultSet.next()) {
-                sum = resultSet.getFloat(1);
+                sum = resultSet.getDouble(1);
             }
             fee = sum / count;
             fee = (fee * 100d) / 100d;
