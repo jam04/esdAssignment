@@ -137,7 +137,7 @@ public class DBController {
             ps.setDate(4, member.getDob());
             ps.setDate(5, currentDate);
             ps.setString(6, "APPLIED");
-            ps.setDouble(7, 3.14);
+            ps.setDouble(7, 10);
 
             ps.executeUpdate();
             ps.close();
