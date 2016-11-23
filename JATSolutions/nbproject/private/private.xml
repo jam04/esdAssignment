@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/newmaster3/esdAssignment-master/JATSolutions/web/WEB-INF/docs/main.jsp</file>
-            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/newmaster3/esdAssignment-master/JATSolutions/src/java/controller/FrontController.java</file>
-            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/newmaster3/esdAssignment-master/JATSolutions/src/java/model/LoggingFilter.java</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/src/java/model/DbListener.java</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/src/java/model/DBController.java</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/web/WEB-INF/docs/register.jsp</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/web/index.html</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/src/java/controller/RegistrationController.java</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/src/java/controller/SubmitClaimController.java</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/web/WEB-INF/docs/login.jsp</file>
+            <file>file:/C:/Users/James/Documents/Uni%20Work/Year%204/ESD/esdAssignment-master/JATSolutions/src/java/controller/FrontController.java</file>
         </group>
     </open-files>
 </project-private>

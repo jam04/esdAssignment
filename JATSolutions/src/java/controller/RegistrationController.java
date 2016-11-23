@@ -33,26 +33,44 @@ public class RegistrationController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String message,
+                date,
+                password,
+                name,
+                initialString,
+                userName;
+        char[] initial;
+        String[] surname;
+        DBController jdbc;
         
-        String message;
-        DBController jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
+        jdbc = new DBController((Connection) request.getServletContext().getAttribute("connection"));
+        date = request.getParameter("dob").replaceAll("(..)-(..)-(....)", "$3-$2-$1");
+        password = request.getParameter("dob").replaceAll("(..)-(..)-(..)(..)", "$1$2$4");
+        name = request.getParameter("name");
+        initial = new char[1];
+        initial[0] = name.charAt(0);
+        initialString = new String(initial);
+        surname = name.split(" ");
+        userName = initialString + "-" + surname[1];
         
-        if(jdbc.idExist(request.getParameter("id")) == false){
+        
+        if (jdbc.idExist(userName) == false) {
             Member newMember = new Member();
-            newMember.setId(request.getParameter("id"));
+            newMember.setId(userName);
             newMember.setName(request.getParameter("name"));
             newMember.setAddress(request.getParameter("address"));
-            newMember.setDob(Date.valueOf(request.getParameter("dob")));
-            jdbc.registerMember(newMember, request.getParameter("password"));
-            message = "user: " + request.getParameter("id") + " added";   
+            newMember.setDob(Date.valueOf(date));
+
+            jdbc.registerMember(newMember, password);
+            message = "user: " + userName + " added";
+        } else {
+            message = "user: " + userName + " already taken!";
         }
-        else{
-            message = "user: " + request.getParameter("id") + " already taken!";   
-        }
-        
+
         request.setAttribute("message", message);
-        request.getRequestDispatcher("/WEB-INF/docs/register.jsp").forward(request, response);
-        
+        request.getRequestDispatcher("/docs/register").forward(request, response);
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
