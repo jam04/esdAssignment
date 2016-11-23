@@ -52,7 +52,7 @@ public class DBController {
             }
 
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
         return found;
     }//method
@@ -76,7 +76,7 @@ public class DBController {
                 member.setBalance(resultSet.getFloat("balance"));
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return member;
@@ -96,7 +96,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
         return admin;
     }//method
@@ -117,7 +117,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return exist;
@@ -151,7 +151,7 @@ public class DBController {
 
             updateBalance(member.getId(), 10);
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
     }//method
 
@@ -178,7 +178,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return paymentList;
@@ -188,19 +188,28 @@ public class DBController {
 
         PreparedStatement ps = null;
         Date currentDate = new Date(Calendar.getInstance().getTime().getTime());
-
+        Member user = getMember(payment.getMemID());
+        double balance = 0;
         try {
             ps = con.prepareStatement("INSERT INTO payments(mem_id,type_of_payment,amount,date,status) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, payment.getMemID());
             ps.setString(2, payment.getTypeOfPayment());
             ps.setDouble(3, payment.getAmount());
             ps.setDate(4, currentDate);
-            ps.setString(5, "SUBMITTED");
-
+            balance = balance - payment.getAmount();
+            if (user.getStatus().equals("APPLIED")) {
+                ps.setString(5, "SUBMITTED");
+            } else {
+                ps.setString(5, "APPROVED");
+                updateBalance(payment.getMemID(), balance);
+                if (user.getStatus().equals("SUSPENDED")) {
+                    updateStatus(payment.getMemID(), "APPROVED");
+                }
+            }
             ps.executeUpdate();
             ps.close();
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
     }//method
 
@@ -219,7 +228,7 @@ public class DBController {
                 limit = true;
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return limit;
@@ -237,13 +246,13 @@ public class DBController {
             int start = claimDate.getYear() * 12 + claimDate.getMonth();
             int end = dorDate.getYear() * 12 + dorDate.getMonth();
             if (end > start) {
-                if ((end - start) >= 6) {
+                if ((end - start) <= 6) {
                     valid = true;
                 }
             }
 
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
         return valid;
     }
@@ -269,7 +278,7 @@ public class DBController {
                     ps.executeUpdate();
                     ps.close();
                 } catch (SQLException s) {
-                    System.out.println("SQL statement is not executed!");
+                    System.out.println("SQL statement is not executed! " + s.getMessage());
                 }
                 response = "Claim submitted.";
             } else {
@@ -305,7 +314,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return memberList;
@@ -328,7 +337,7 @@ public class DBController {
                 member.setBalance(resultSet.getFloat("balance"));
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return member;
@@ -357,7 +366,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return balanceList;
@@ -389,7 +398,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return claimList;
@@ -417,7 +426,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return applicationList;
@@ -441,20 +450,18 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return updated;
     }//method
 
-    public boolean processPayment(int id) {
+    public boolean processApplication(int id) {
 
         boolean updated = false;
         String update = "UPDATE payments SET status='APPROVED' WHERE id=" + id;
         String query = "SELECT * FROM payments WHERE status='SUBMITTED'";
         String username;
-        String type;
-        double amount = 0;
         PreparedStatement ps = null;
 
         try {
@@ -462,27 +469,19 @@ public class DBController {
             while (resultSet.next() && updated == false) {
                 if (id == resultSet.getInt("id")) {
                     username = resultSet.getString("mem_id");
-                    type = resultSet.getString("tyoe_of_payment");
-                    amount = resultSet.getDouble("amount");
 
                     ps = con.prepareStatement(update);
                     ps.executeUpdate();
                     ps.close();
 
-                    switch (type) {
-                        case "MEMBER":
-                            updateStatus(username, "APPROVED");
-                            break;
-                        case "CLAIM":
-                            amount = 0 - amount;
-                            updateBalance(username, amount);
-                            break;
-                    }
+                    updateStatus(username, "APPROVED");
+                    updateBalance(username, -10);
+
                     updated = true;
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
 
         return updated;
@@ -500,7 +499,7 @@ public class DBController {
                 ps.executeUpdate();
                 ps.close();
             } catch (SQLException s) {
-                System.out.println("SQL statement is not executed!");
+                System.out.println("SQL statement is not executed! " + s.getMessage());
             }
         }
     }//method
@@ -520,12 +519,12 @@ public class DBController {
                     payment.setTypeOfPayment(resultSet.getString("type_of_payment"));
                     payment.setAmount(resultSet.getFloat("amount"));
                     payment.setDate(resultSet.getDate("date"));
-
+                    payment.setStatus(resultSet.getString("status"));
                     incomeList.add(payment);
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
         return incomeList;
     }//method
@@ -551,7 +550,7 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
         return expenseList;
     }//method
@@ -568,6 +567,7 @@ public class DBController {
                 updateBalance(username, 10);
             }
         } catch (SQLException s) {
+            System.out.println("SQL statement is not executed! " + s.getMessage());
 
         }
     }//method
@@ -595,7 +595,8 @@ public class DBController {
             ps.close();
 
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
+
         }
     }//method
 
@@ -621,7 +622,8 @@ public class DBController {
                 }
             }
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
+
         }
     }//method
 
@@ -645,7 +647,8 @@ public class DBController {
             fee = sum / count;
             fee = (fee * 100d) / 100d;
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
+
         }
 
         return fee;
@@ -657,7 +660,8 @@ public class DBController {
             statement = con.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (SQLException s) {
-            System.out.println("SQL statement is not executed!");
+            System.out.println("SQL statement is not executed! " + s.getMessage());
+
         }
     }//method
 }//class
