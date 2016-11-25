@@ -23,6 +23,14 @@
         <a href="/JATSolutions/docs/listApplications">Pending Member Applications</a><br>
         <a href="/JATSolutions/docs/listBalance">Outstanding Balances</a><br>
         <a href="/JATSolutions/docs/report">Report</a><br>
+        <a href="/JATSolutions/docs/sendClaimFee">Send Claim Fee</a><br><br>
+        
+        <%
+            if (request.getAttribute("message") != null) {
+                out.print(request.getAttribute("message"));
+            }
+        %>
+        
         <h1>Member List: </h1>
         <table>
             <tr>
