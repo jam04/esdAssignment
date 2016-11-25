@@ -15,7 +15,16 @@
     jdbc = new DBController((Connection) application.getAttribute("connection"));
     paymentList = jdbc.applicationList();
 %>
-<h1>All Payments</h1>
+<h1>Pending Member Applications</h1>
+
+<br>
+<form action="/JATSolutions/ProcessApplicationController.do">
+    <input name="paymentId" type="text" placeholder="ID" id="paymentId"><br>
+    <input type="radio" name="status" value="APPROVED" checked> Approve<br>
+    <button type="submit" class="btn btn-primary btn-block btn-large">Submit</button>    
+</form>
+<br>
+
 <table>
             <tr>
                 <th>Payment ID</th>
