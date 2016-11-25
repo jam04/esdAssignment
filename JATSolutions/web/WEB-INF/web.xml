@@ -31,6 +31,10 @@
         <servlet-name>ProcessClaimController</servlet-name>
         <servlet-class>controller.ProcessClaimController</servlet-class>
     </servlet>
+        <servlet>
+        <servlet-name>ProcessApplicationController</servlet-name>
+        <servlet-class>controller.ProcessApplicationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationController</servlet-name>
         <url-pattern>/RegistrationController.do</url-pattern>
@@ -62,6 +66,10 @@
     <servlet-mapping>
         <servlet-name>ProcessClaimController</servlet-name>
         <url-pattern>/ProcessClaimController.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessApplicationController</servlet-name>
+        <url-pattern>/ProcessApplicationController.do</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
