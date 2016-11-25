@@ -21,20 +21,32 @@
     expenseList = jdbc.listExpense();
 %>
 <h1>Report of annual turnover </h1>
-
+<table>
+            <tr>
+                <th>Total Income</th>
+                <th>Total Expense</th> 
+                <th>Total Profit</th> 
+            </tr>
 
 <%
     for (Payment eachPayment : incomeList) {
         incomeAmount += eachPayment.getAmount();
     }
-    out.println("Total income: " + incomeAmount);
+    out.println("<tr>");
+    out.println("<td>£" + incomeAmount+ "</td>");
 %> 
 
 <%
     for (Claim eachClaim : expenseList) {
         expenseAmount += eachClaim.getAmount();
     }
-    out.println("Total Expense: " + expenseAmount);
+    out.println("<td>£" + expenseAmount+ "</td>");
 %>   
+
+<%
+    out.println("<td>£" + (incomeAmount/ expenseAmount)+ "</td>");
+    out.println("</tr>");
+%>   
+</table>
 
 <div><a href="/JATSolutions/docs/home">Admin Dashboard</a></div>
