@@ -53,6 +53,7 @@ public class RegistrationController extends HttpServlet {
         initialString = new String(initial);
         surname = name.split(" ");
         userName = initialString + "-" + surname[1];
+        userName = userName.toLowerCase();
         
         
         if (jdbc.idExist(userName) == false) {
