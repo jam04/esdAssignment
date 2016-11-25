@@ -105,7 +105,12 @@ public class FrontController extends HttpServlet {
                 message = "Sign out sucessful";
                 request.setAttribute("message", message);
                 break;
-
+            case "/docs/sendClaimFee":
+                jdbc.claimFee();
+                include = "adminHome.jsp";
+                message = "Claim fee sent to members";
+                request.setAttribute("message", message);
+                break;
             default:
                 include = "Error.jsp";
         }
