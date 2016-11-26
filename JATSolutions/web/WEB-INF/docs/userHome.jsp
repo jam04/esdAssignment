@@ -94,6 +94,7 @@ myPayments = jdbc.paymentList((String)session.getAttribute("userName"));
                 out.println("<td>" + eachPayment.getId() + "</td>");
                 out.println("<td>" + eachPayment.getDate() + "</td>");
                 out.println("<td>" + eachPayment.getTypeOfPayment() + "</td>");
+		out.println("<td>" + eachPayment.getStatus() + "</td>");
                 out.println("<td>£" + eachPayment.getAmount() + "</td>");
                 out.println("</tr>");
             }
