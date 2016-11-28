@@ -5,12 +5,14 @@
  */
 package model;
 
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class DBController {
     String startOfYear = now.with(TemporalAdjusters.firstDayOfYear()).toString();
     String endOfYear = now.with(TemporalAdjusters.lastDayOfYear()).toString();
     String today = now.toString();
+    DecimalFormat df = new DecimalFormat("#.##");
 
     public DBController(Connection con) {
         this.con = con;
@@ -150,7 +153,6 @@ public class DBController {
             ps.executeUpdate();
             ps.close();
 
-            updateBalance(member.getId(), 10);
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed! " + s.getMessage());
         }
@@ -498,21 +500,23 @@ public class DBController {
         return updated;
     }//method
 
-    public void claimFee() {
+    public String claimFee() {
 
         PreparedStatement ps = null;
         double fee = calcClaimFee();
-        String query = "UPDATE members SET balance = (balance+" + fee + ")";
+        String query = "UPDATE members SET balance = (balance+" + fee + ") WHERE status!='APPLIED'";
+        String message = "The claim fee for each member this year is: £" + fee;
 
-        if (today.equals(endOfYear)) {
-            try {
-                ps = con.prepareStatement(query);
-                ps.executeUpdate();
-                ps.close();
-            } catch (SQLException s) {
-                System.out.println("SQL statement is not executed! " + s.getMessage());
-            }
+//        if (today.equals(endOfYear)) {
+        try {
+            ps = con.prepareStatement(query);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException s) {
+            System.out.println("SQL statement is not executed! " + s.getMessage());
         }
+        return message;
+//        }
     }//method
 
     public ArrayList listIncome() {
@@ -643,6 +647,8 @@ public class DBController {
         double fee = 0;
         double sum = 0;
         double count = 0;
+        double currency = 0;
+        df.setRoundingMode(RoundingMode.FLOOR);        
         String queryCount = "SELECT COUNT(*) FROM members";
         String querySum = "SELECT SUM(amount) FROM claims WHERE status ='APPROVED' AND date BETWEEN '" + startOfYear + "' AND '" + endOfYear + "'";
 
@@ -656,13 +662,13 @@ public class DBController {
                 sum = resultSet.getDouble(1);
             }
             fee = sum / count;
-            fee = (fee * 100d) / 100d;
+            currency = new Double(df.format(fee));
         } catch (SQLException s) {
             System.out.println("SQL statement is not executed! " + s.getMessage());
 
         }
 
-        return fee;
+        return currency;
     }//method
 
     private void selectQuery(String query) {
