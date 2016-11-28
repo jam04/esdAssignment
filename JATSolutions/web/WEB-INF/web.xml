@@ -57,10 +57,6 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Front</servlet-name>
-        <url-pattern>/Front</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Front</servlet-name>
         <url-pattern>/docs/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
